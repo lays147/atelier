@@ -37,13 +37,14 @@ public:
     /**
      * Default constructor
      */
-    AtCoreInstanceWidget();
+    AtCoreInstanceWidget(QWidget* parent = nullptr);
 
     /**
      * Destructor
      */
     ~AtCoreInstanceWidget();
-    void startConnection(QString serialPort, int baud);
+    void startConnection(QString serialPort, QMap<QString, QVariant> profiles);
+    bool connected();
     
 private:
     Ui::AtCoreInstanceWidget* ui;
@@ -59,6 +60,8 @@ private:
     void checkTemperature(uint sensorType, uint number, uint temp);
     void axisControlClicked(QChar axis, int value);
     void enableControls(bool b);
+    bool m_connected;
+    void setConnectedStatus(bool b);
     
 signals:
     void extruderCountChanged(int count);

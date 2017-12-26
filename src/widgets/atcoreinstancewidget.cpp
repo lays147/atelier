@@ -22,7 +22,9 @@
 #include <AtCore/GCodeCommands>
 #include <KLocalizedString>
 
-AtCoreInstanceWidget::AtCoreInstanceWidget()
+AtCoreInstanceWidget::AtCoreInstanceWidget(QWidget *parent):
+    QWidget(parent),
+    m_connected(false)
 {
     ui = new Ui::AtCoreInstanceWidget;
     ui->setupUi(this);
@@ -43,7 +45,10 @@ AtCoreInstanceWidget::AtCoreInstanceWidget()
     connect(ui->pausePB, &QPushButton::clicked, this, &AtCoreInstanceWidget::pausePrint);
     connect(ui->stopPB, &QPushButton::clicked, this, &AtCoreInstanceWidget::stopPrint);
     connect(ui->disableMotorsPB, &QPushButton::clicked, this, &AtCoreInstanceWidget::disableMotors);
-    //enableControls(false);
+    connect(ui->disconnectPB, &QPushButton::clicked, [=]{
+        m_core.setState(AtCore::DISCONNECTED);
+    });
+    enableControls(false);
 }
 
 AtCoreInstanceWidget::~AtCoreInstanceWidget()
@@ -51,10 +56,9 @@ AtCoreInstanceWidget::~AtCoreInstanceWidget()
     delete ui;
 }
 
-void AtCoreInstanceWidget::startConnection(QString serialPort, int baud){
-    m_core.initSerial(serialPort, baud);
+void AtCoreInstanceWidget::startConnection(QString serialPort, QMap<QString, QVariant> profiles){
+    m_core.initSerial(serialPort, profiles["bps"].toInt());
     initConnectsToAtCore();
-    
 }
 
 void AtCoreInstanceWidget::initConnectsToAtCore()
@@ -145,16 +149,15 @@ void AtCoreInstanceWidget::handlePrinterStatusChanged(AtCore::STATES newState)
             stateString = i18n("Connected to ") + m_core.serial()->portName();
             emit extruderCountChanged(m_core.extruderCount());
             ui->logWidget->addLog(i18n("Serial connected"));
-            enableControls(true);
             ui->disconnectPB->setEnabled(true);
+            setConnectedStatus(true);
         } break;
         case AtCore::DISCONNECTED: {
             stateString = i18n("Not Connected");
             disconnect(&m_core, &AtCore::receivedMessage, this, &AtCoreInstanceWidget::checkReceivedCommand);
             disconnect(m_core.serial(), &SerialLayer::pushedCommand, this, &AtCoreInstanceWidget::checkPushedCommands);
             ui->logWidget->addLog(i18n("Serial disconnected"));
-            enableControls(false);
-
+            setConnectedStatus(false);
         } break;
         case AtCore::STARTPRINT: {
             stateString = i18n("Starting Print");
@@ -247,5 +250,18 @@ void AtCoreInstanceWidget::enableControls(bool b)
     ui->printPB->setEnabled(b);
     ui->pausePB->setEnabled(b);
     ui->stopPB->setEnabled(b);
+    ui->disconnectPB->setEnabled(b);
     ui->disableMotorsPB->setEnabled(b);
 }
+
+bool AtCoreInstanceWidget::connected()
+{
+    return m_connected;
+}
+
+void AtCoreInstanceWidget::setConnectedStatus(bool b)
+{
+    m_connected = b;
+    enableControls(b);
+}
+
