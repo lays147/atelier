@@ -35,7 +35,6 @@ ConnectSettingsDialog::ConnectSettingsDialog(QWidget *parent) :
     connect(ui->buttonBox, &QDialogButtonBox::clicked, [ = ](QAbstractButton * btn) {
         if (ui->buttonBox->buttonRole(btn) == QDialogButtonBox::RejectRole) {
             close();
-            emit setConnectValue(false);
         }
     });
 
@@ -109,10 +108,8 @@ void ConnectSettingsDialog::accept()
 {
     if (ui->profileCB->currentText().isEmpty()) {
         QMessageBox::warning(this, i18n("Warning"), i18n("Please, create a profile to connect on Settings!"));
-        emit setConnectValue(false);
     } else if (ui->serialPortCB->currentText().isEmpty()) {
         QMessageBox::warning(this, i18n("Warning"), i18n("Please, connect a serial device to continue!"));
-        emit setConnectValue(false);
     } else {
         emit startConnection(ui->serialPortCB->currentText(), profileData());
         this->close();

@@ -45,7 +45,7 @@ private:
     QMap<QString, QVariant> profileData();
     void accept();
 
+
 signals:
     void startConnection(const QString port, const QMap<QString, QVariant> data);
-    void setConnectValue(bool b);
 };
