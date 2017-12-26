@@ -42,9 +42,9 @@ private:
     QUrl fileName;
     ProfilesDialog *profilesDialog;
     ConnectSettingsDialog *connectSettingsDialog;
-    QAction *_connect;
     void initWidgets();
     void setupActions();
     void openFile();
+    void newConnection(QString port, QMap<QString, QVariant>profile);
 
 };

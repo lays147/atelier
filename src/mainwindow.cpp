@@ -47,6 +47,7 @@ void MainWindow::initWidgets()
     // When a new profile is added on the Profile Dialog it needs to update the profiles on connection dialog
     connect(profilesDialog, &ProfilesDialog::updateProfiles,
             connectSettingsDialog, &ConnectSettingsDialog::updateProfiles);
+    connect(connectSettingsDialog, &ConnectSettingsDialog::startConnection, this, &MainWindow::newConnection);
 
 //     connectSettingsDialog->setFirmwareList(core.availableFirmwarePlugins());
 //     profilesDialog->setBaudRates(core.serial()->validBaudRates());
@@ -60,8 +61,9 @@ void MainWindow::setupActions()
     action->setText(i18n("&Open GCode"));
     connect(action, &QAction::triggered, this, &MainWindow::openFile);
 
-    _connect = actionCollection()->addAction(QStringLiteral("connect"));
-    _connect->setText(i18n("&Connect"));
+    action = actionCollection()->addAction(QStringLiteral("connect"));
+    action->setText(i18n("&Connect"));
+    connect(action, &QAction::triggered, connectSettingsDialog, &ConnectSettingsDialog::show);
 
     action = actionCollection()->addAction(QStringLiteral("profiles"));
     action->setText(i18n("&Profiles"));
@@ -90,4 +92,18 @@ void MainWindow::openFile()
         guiFactory()->addClient(ui->gcodeEditorWidget->gcodeView());
         ui->view3DWidget->drawModel(fileName.toString());
     }
+}
+
+void MainWindow::newConnection(QString port, QMap<QString, QVariant>profile)
+{
+    int tabs = ui->tabWidget->count();
+    if(tabs == 1){
+        auto instance = qobject_cast<AtCoreInstanceWidget*>(ui->tabWidget->currentWidget());
+        if(!instance->connected()){
+            instance->startConnection(port, profile);
+            return;
+        }
+    }
+//     ui->tabWidget->addTab(new AtCoreInstanceWidget(), QString("%d").arg(++tabs));
+//     dynamic_cast<AtCoreInstanceWidget*>(ui->tabWidget->widget(tabs))->startConnection(port, profile);
 }
