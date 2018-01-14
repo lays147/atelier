@@ -55,25 +55,14 @@ void AtCoreInstanceWidget::buildToolbar()
        m_core.home();
     });
     toolBar->addAction(homeAll);
-
-    auto homeX = new QAction("X");
-    connect(homeX, &QAction::triggered, [=]{
-        m_core.home(AtCore::X);
-    });
-
-    auto homeY = new QAction("Y");
-    connect(homeY, &QAction::triggered, [=]{
-        m_core.home(AtCore::Y);
-    });
-
-    auto homeZ = new QAction("Z");
-    connect(homeZ, &QAction::triggered, [=]{
-        m_core.home(AtCore::Z);
-    });
-
-    toolBar->addAction(homeX);
-    toolBar->addAction(homeY);
-    toolBar->addAction(homeZ);
+    
+    for(auto homes : std::map<QString, int>{{"X", AtCore::X}, {"Y", AtCore::Y}, {"Z", AtCore::Z}}) {
+        auto home = new QAction(homes.first);
+        connect(home, &QAction::triggered, [this, &homes] {
+            m_core.home(homes.second);
+        });
+        toolBar->addAction(home);
+    }
 
     toolBar->addSeparator();
 
