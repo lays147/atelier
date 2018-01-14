@@ -62,7 +62,39 @@ void AtCoreInstanceWidget::buildToolbar()
 {
     toolBar = new QToolBar();
 
-    auto axis = new QAction("Axis");
+    auto lb = new QAction;
+    lb->setIcon(style()->standardIcon(QStyle::SP_DirHomeIcon));
+    lb->setDisabled(true);
+    toolBar->addAction(lb);
+
+    auto homeAll = new QAction("All");
+    connect(homeAll, &QAction::triggered, [=]{
+       m_core.home();
+    });
+    toolBar->addAction(homeAll);
+
+    auto homeX = new QAction("X");
+    connect(homeX, &QAction::triggered, [=]{
+        m_core.home(AtCore::X);
+    });
+
+    auto homeY = new QAction("Y");
+    connect(homeY, &QAction::triggered, [=]{
+        m_core.home(AtCore::Y);
+    });
+
+    auto homeZ = new QAction("Z");
+    connect(homeZ, &QAction::triggered, [=]{
+        m_core.home(AtCore::Z);
+    });
+
+    toolBar->addAction(homeX);
+    toolBar->addAction(homeY);
+    toolBar->addAction(homeZ);
+
+    toolBar->addSeparator();
+
+    auto *axis = new QAction("Axis");
     axis->setCheckable(true);
     axis->setChecked(true);
     connect(axis, &QAction::toggled, ui->axisViewWidget, &AxisControl::setVisible);
@@ -80,7 +112,6 @@ void AtCoreInstanceWidget::buildToolbar()
     toolBar->addAction(axis);
     toolBar->addAction(controls);
     toolBar->addAction(plot);
-    ui->toolBarLayout->addWidget(new QLabel(i18n("Show/Hide: ")));
     ui->toolBarLayout->addWidget(toolBar);
     ui->toolBarLayout->addStretch();
 }
