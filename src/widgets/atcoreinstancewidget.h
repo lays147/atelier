@@ -54,6 +54,7 @@ private:
     AtCore m_core;
     QToolBar *toolBar;
     QMap<QString, QVariant> profileData;
+    QToolBar *mainToolBar;
     QList<QUrl> m_files;
     void initConnectsToAtCore();
     void printFile(const QUrl& fileName);
@@ -67,9 +68,10 @@ private:
     void axisControlClicked(QChar axis, int value);
     void enableControls(bool b);
     void buildToolbar();
-    void setupConnections();
+    void buildMainToolbar();
     void print();
-
+    QAction* buildAction(QString name, bool checked, QIcon icon=QIcon());
 signals:
     void extruderCountChanged(int count);
+    void disableDisconnect(bool b);
 };
