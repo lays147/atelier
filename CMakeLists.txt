@@ -41,14 +41,14 @@ find_package(Qt5 ${QT_MIN_VERSION} REQUIRED COMPONENTS
                 Charts
                 Quick
                 Qml
-                3DCore
-                3DExtras
-                3DRender
-                3DInput
+                #3DCore
+                #3DExtras
+                #3DRender
+                #3DInput
                 Multimedia
                 MultimediaWidgets
             )
-            
+
 if(BUILD_TESTING)
     find_package(Qt5Test ${QT_MIN_VERSION} CONFIG REQUIRED)
 endif()

@@ -93,7 +93,7 @@ void MainWindow::openFile()
                               QDir::homePath(), i18n("GCode (*.gco *.gcode)"));
     if (!fileNameFromDialog.isEmpty()) {
         ui->gcodeEditorWidget->loadFile(fileNameFromDialog);
-        ui->view3DWidget->drawModel(fileNameFromDialog.toString());
+        //ui->view3DWidget->drawModel(fileNameFromDialog.toString());
         m_openFiles.append(fileNameFromDialog);
     }
 }

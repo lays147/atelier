@@ -174,7 +174,7 @@ void AtCoreInstanceWidget::initConnectsToAtCore()
 void AtCoreInstanceWidget::printFile(const QUrl& fileName)
 {
     if (!fileName.isEmpty() && (m_core.state() == AtCore::IDLE)) {
-        m_core.print(fileName.toLocalFile());
+        m_core.print(fileName.toLocalFile(), false);
     }
 }
 
